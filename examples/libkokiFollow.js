@@ -2,7 +2,7 @@ var client = require('../lib/car');
 var childProcess = require('child_process');
 var koki = require("../lib/koki");
 
-var serialNumber = 0;
+var serialNumber = '0000981';
 
 client.discover()
     .then(function() { return client.connect(serialNumber); })
