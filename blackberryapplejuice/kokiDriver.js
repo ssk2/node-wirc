@@ -8,11 +8,16 @@ var clockwise = true;
 var steer_reduction_timeout = null;
 var steering_marker_id = null;
 
+var last_steer = 1;
+var last_move = 1;
+
 var previous_bearing = 0;
 
 var driver = {}
 
-driver.drive = function (client, steer, move) {	
+driver.drive = function (client) {	
+	last_steer = steer;
+	last_move = move;
 	client.steer(steer);
 	client.move(move);
 	console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
@@ -20,8 +25,9 @@ driver.drive = function (client, steer, move) {
 
 driver.scan_for_markers = function (client) {
 	//Go the other way!
-	steer = steer * -1; 
-	steer = move * -1; //Ambitious
+	console.log('Scanning');
+	steer = last_steer * -1; 
+	move = last_move * -1; //Ambitious
 	driver.drive(client, steer, move);
 }
 
@@ -38,8 +44,7 @@ driver.see_marker = function (client, marker) {
             } else {
                 steer = 1;
             }
-            last_steer = steer;
-            client.steer(steer);
+            driver.drive(client);
             steer_reduction_timeout = setInterval(function() {
                 driver.reduce_steering(client);
             }, 500);
@@ -50,56 +55,17 @@ driver.see_marker = function (client, marker) {
 driver.reduce_steering = function (client) {
     var reduction_rate = 0.4;
     if (last_steer > 0) {
-        var new_steer = last_steer - reduction_rate;
+        var steer = last_steer - reduction_rate;
     } else {
-        var new_steer = last_steer + reduction_rate;
+        var steer = last_steer + reduction_rate;
     }
     console.log('New steer: ', new_steer);
-    client.steer(new_steer);
-    if (0 <= new_steer) {
+    driver.drive(client);
+    if (0 <= steer) {
         console.log('Steering finished');
         clearInterval(steer_reduction_timeout);
         steer_reduction_timeout = null;
     }
-    last_steer = new_steer;
-}
-
-driver.approach_marker = function (client, marker)  {
-    //Is marker the next marker we're expecting? (i.e. < last marker)
-    //Drive towards it (clever driving logic here that slows down when we hit a marker)
-
-    if (!driver.avoid_walls(client, marker)) {
-    	previous_bearing = 0;
-		console.log('Moving towards marker ' + marker.code.toString());
-
-		if (marker.code > last_seen_marker) {
-			if (marker.code % 2 == 0) {
-				if (clockwise) {
-					//Marker is on the outside edge
-					var marker_location = marker.centre.world;
-					steer = 0.5;
-					driver.accelerate();
-					driver.drive(client, steer, move);
-				}
-			} else {
-				if (clockwise) {
-					//Marker is on the inside edge
-					var marker_location = marker.centre.world;
-					steer = -0.5;
-					driver.accelerate();
-					driver.drive(client, steer, move);
-				}
-			}    	
-		} else if (marker.code < last_seen_marker) {
-			driver.decelerate();
-			driver.scan_for_markers(client); //We shouldn't be going backwards!
-		} else {
-			//steer = Math.cos(marker.center.world.y * 20);
-            //console.log('maintain going toward marker at steering - ' + steer);
-            driver.drive(client, steer, move);
-		}
-        last_seen_marker = marker.code;
-	}
 }
 
 driver.accelerate = function () {
@@ -130,12 +96,6 @@ driver.avoid_walls = function(client, marker) {
         return true;
     }
     return false;
-}
-
-
-driver.distance_to_marker = function (marker) {
-	console.log(marker);
-	return marker.centre.world.y;
 }
 
 driver.distance_to_wall = function (marker) { 
