@@ -11,8 +11,15 @@ client.discover()
     .then(function() {
 		data.startCapturing(client);
 
-		setInterval(function() {
-			console.log(data.getLastMarkers());
-		}, 1000);
+		var logMarker = function(marker) {
+			console.log('Found a marker:', marker.code);
+		};
+
+		data.on('marker', logMarker);
+
+		data.on('timeout', function() {
+			console.log('Timed out.');
+			data.off('marker', logMarker);
+		});
 
     });

@@ -1,35 +1,56 @@
 var koki = require("../lib/koki");
 
+var RAISE_EVENT_AFTER = 3333;
+
+var callbacks = {};
+var timeout = null;
+
 var data = {};
-var lastVisibleMarkers = [];
-var lastMarkers = [];
+
+var triggerTimeout = function() {
+	data.trigger('timeout', null);
+};
+
+var resetTimeout = function() {
+	clearTimeout(timeout);
+	timeout = setTimeout(triggerTimeout, RAISE_EVENT_AFTER);
+};
 
 data.startCapturing = function(client) {
-	client.startCamera(0, function(data) {
-		koki.findMarkers(data.image, function(err, markers) {
-			lastMarkers = markers;
+	client.startCamera(0, function(imageData) {
+		koki.findMarkers(imageData.image, function(err, markers) {
+			markers.forEach(function(marker) {
+				data.trigger('marker', marker);
+			});
 			if (markers.length > 0) {
-				lastVisibleMarkers = markers;
+				resetTimeout();
 			}
 		});
 	});
 };
-data.getLastMarkers = function() {
-	return lastMarkers;
+
+data.on = function(eventName, callback) {
+	if (eventName in callbacks) {
+		callbacks[eventName].push(callback);
+	} else {
+		callbacks[eventName] = [callback];
+	}
 };
-data.getLastVisibleMarkers = function() {
-	return lastVisibleMarkers;
+
+data.off = function(eventName, callback) {
+	newCallbacks = [];
+	for (var i in callbacks[eventName]) {
+		if (callbacks[eventName][i] !== callback) {
+			newCallbacks.push(callbacks[eventName][i]);
+		};
+	}
+	callbacks[eventName] = newCallbacks;
 };
-data.getFurthestMarker = function() {
-	var furthestMarker = null;
-	var furthestDistance = 0;
-	lastMarkers.forEach(function(marker) {
-		if (marker.centre.world.y > furthestDistance) {
-			furthestMarker = marker;
-			furthestDistance = marker.centre.world.y;
-		}
-	});
-	return furthestMarker;
+
+data.trigger = function(eventName, eventData) {
+	for (var i in callbacks[eventName]) {
+		callbacks[eventName][i](eventData);
+	}
 };
 
 module.exports = data;
