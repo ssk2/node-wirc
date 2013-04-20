@@ -9,6 +9,7 @@ var data = {};
 
 var triggerTimeout = function() {
 	data.trigger('timeout', null);
+	resetTimeout();
 };
 
 var resetTimeout = function() {
