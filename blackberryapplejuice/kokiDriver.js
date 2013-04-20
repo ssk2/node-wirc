@@ -20,7 +20,7 @@ driver.scan = function (client) {
 }
 
 driver.drive = function (client, data) {
-	if (data.getNewestMarkers()) {
+	if (data.getLastMarkers()) {
 		//Seen a new marker
 		marker = data.getFurthestMarker();
         driver.approach(client, marker);
