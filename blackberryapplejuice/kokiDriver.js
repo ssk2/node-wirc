@@ -4,9 +4,8 @@ var steer = 0;
 var move = 0;
 var clockwise = true;
 //What is the expected marker orientation? Clockwise or anticlockwise? Initialise appropriately.
-
-var last_steer = 0;
-var last_move = 0;
+var last_steer = 1;
+var last_move = 1;
 
 driver.scan = function (client) {
 	//Go the other way!
