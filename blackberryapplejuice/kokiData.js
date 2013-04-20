@@ -23,7 +23,7 @@ data.getLastVisibleMarkers = function() {
 data.getFurthestMarker = function() {
 	var furthestMarker = null;
 	var furthestDistance = 0;
-	lastMarkers.forEach(lastMarkers, function(marker) {
+	lastMarkers.forEach(function(marker) {
 		if (marker.world.y > furthestDistance) {
 			furthestMarker = marker;
 			furthestDistance = marker.world.y;
