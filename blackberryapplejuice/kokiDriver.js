@@ -62,8 +62,10 @@ driver.approach_marker = function (client, marker)  {
 					client.move(move);
 				}
 			}    	
+		} else if (marker.code < last_seen_marker) {
+			driver.scan_for_markers(client); //We shouldn't be going backwards!
 		} else {
-		//Scan or something. We shouldn't be going towards lower ranked markers.
+			//Keep going.
 		}
 	}
 }
