@@ -1,3 +1,5 @@
 steering...
      1 = Full left
     -1 = Full right
+
+Turning circle = 160cm
