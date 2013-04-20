@@ -5,8 +5,6 @@ var move = 0.3;
 var accelerate = 1.05;
 var clockwise = true;
 
-var last_steer = 0.5;
-
 var steer_reduction_timeout = null;
 var steering_marker_id = null;
 
@@ -22,10 +20,9 @@ driver.drive = function (client, steer, move) {
 
 driver.scan_for_markers = function (client) {
 	//Go the other way!
-	steer = last_steer * -1; 
-	driver.accelerate(); //Ambitious
+	steer = steer * -1; 
+	steer = move * -1; //Ambitious
 	driver.drive(client, steer, move);
-	last_steer = steer;
 }
 
 driver.see_marker = function (client, marker) {
