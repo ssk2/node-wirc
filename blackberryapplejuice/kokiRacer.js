@@ -23,6 +23,7 @@ client.discover()
         });
 
         data.on('timeout', function() {
+            console.log('Panic');
             driver.scan_for_markers(client);
         });
     });
