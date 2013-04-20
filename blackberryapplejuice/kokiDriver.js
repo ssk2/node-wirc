@@ -22,11 +22,9 @@ driver.scan = function (client) {
 }
 
 driver.avoidWalls = function(client, marker) {
-    var angle = marker.rotation.x;
-    angle = angle * angle_convert;
-    var distance_to_wall = marker.centre.world.y * Math.cos(angle)
+    var distance_to_wall = driver.distance_to_wall(marker);
     
-    //if we're too close to a wall then get away before doing anthing else
+    //if we're too close to a wall then get away before doing anything else
     if (distance_to_wall <= 0.15) {
         if (Math.abs(marker.bearing.x) < previous_bearing) {
             steer = -last_steer
@@ -41,7 +39,11 @@ driver.avoidWalls = function(client, marker) {
     return false;
 }
 
-driver.drive = function (client, data) {
+driver.drive = function (client, data) {	
+	//Keep going straight
+
+	//Approach Marker
+
 	if (data.getLastMarkers().length > 0) {
 		console.log('Seen a marker');
 		//Seen a new marker
@@ -57,7 +59,9 @@ driver.drive = function (client, data) {
 	}
 }
 
-driver.approach = function (client, marker)  {
+driver.approach_marker = function (client, marker)  {
+	// Have 
+
     //Is marker the next marker we're expecting? (i.e. < last marker)
     //Drive towards it (clever driving logic here that slows down when we hit a marker)
     console.log('Moving towards marker');
@@ -89,6 +93,16 @@ driver.approach = function (client, marker)  {
     } else {
     	//Scan or something. We shouldn't be going towards lower ranked markers.
     }
+}
+
+
+driver.distance_to_marker = function (marker) {
+	return marker.centre.world.y;
+}
+
+driver.distance_to_wall = function (marker) { 
+    angle = marker.rotation.x * (180 / Math.pi);
+    return marker.centre.world.y * Math.cos(angle);
 }
 
 module.exports = driver;
