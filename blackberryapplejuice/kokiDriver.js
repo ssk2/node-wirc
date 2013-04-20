@@ -8,6 +8,7 @@ var clockwise = true;
 var last_steer = 0.5;
 
 var steer_reduction_timeout = null;
+var steering_marker_id = null;
 
 var previous_bearing = 0;
 
@@ -30,6 +31,9 @@ driver.scan_for_markers = function (client) {
 driver.see_marker = function (client, marker) {
     console.log('Marker seen');
     if (marker.centre.world.y < 1) {
+        if ( marker.code != steering_marker_id ) {
+
+        }
         if (null == steer_reduction_timeout) {
             if (marker.code %2 == 0) {
                 steer = -1;
@@ -43,6 +47,23 @@ driver.see_marker = function (client, marker) {
             }, 500);
         }
     }
+}
+
+driver.reduce_steering = function (client) {
+    var reduction_rate = 0.4;
+    if (last_steer > 0) {
+        var new_steer = last_steer - reduction_rate;
+    } else {
+        var new_steer = last_steer + reduction_rate;
+    }
+    console.log('New steer: ', new_steer);
+    client.steer(new_steer);
+    if (0 <= new_steer) {
+        console.log('Steering finished');
+        clearInterval(steer_reduction_timeout);
+        steer_reduction_timeout = null;
+    }
+    last_steer = new_steer;
 }
 
 driver.approach_marker = function (client, marker)  {
