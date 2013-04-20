@@ -8,8 +8,8 @@ var clockwise = true;
 var steer_reduction_timeout = null;
 var steering_marker_id = null;
 
-var last_steer = 1;
-var last_move = 1;
+var last_steer = 0.5;
+var last_move = 0.5;
 
 var previous_bearing = 0;
 
@@ -26,9 +26,13 @@ driver.drive = function (client) {
 driver.scan_for_markers = function (client) {
 	//Go the other way!
 	console.log('Scanning');
-	steer = last_steer * -1; 
+
+	// if (steering_marker_id % 2 == 0) {
+	// 	// reverse
+	// }
+	//steer = last_steer * -1; 
 	move = last_move * -1; //Ambitious
-	driver.drive(client, steer, move);
+	driver.drive(client);
 }
 
 driver.see_marker = function (client, marker) {
@@ -92,7 +96,7 @@ driver.avoid_walls = function(client, marker) {
             steer = -last_steer
             previous_bearing = Math.abs(marker.bearing.x);
         }
-        driver.drive(client, steer, move);
+        driver.drive(client);
         return true;
     }
     return false;
