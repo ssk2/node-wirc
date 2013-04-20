@@ -3,7 +3,7 @@ var max_speed = 1 //Arbitrary
 var steer = 0;
 var move = 0;
 var clockwise = true;
-//What is the expected marker orientation? Clockwise or anticlockwise? Initialise appropriately.
+
 var last_steer = 1;
 var previous_bearing = 0;
 var last_move = 0.5;
@@ -16,7 +16,7 @@ driver.scan = function (client) {
 	move = last_move * -1;
 	client.steer(steer);
 	client.move(move);
-	console.log(move);
+	console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
 	last_steer = steer;
 	last_move = move;
 }
@@ -57,10 +57,13 @@ driver.drive = function (client, data) {
 driver.approach = function (client, marker)  {
     //Is marker the next marker we're expecting? (i.e. < last marker)
     //Drive towards it (clever driving logic here that slows down when we hit a marker)
+    console.log('Moving towards marker');
+
     if (marker.code > last_seen_marker)
     {
     	last_seen_marker = marker.code;
 	    if (marker.code % 2 == 0) {
+	    	console.log('Even marker');
 	    	if (clockwise) {
 	    		//Marker is on the outside edge
 				var marker_location = marker.centre.world;
@@ -70,6 +73,7 @@ driver.approach = function (client, marker)  {
 				client.move(move);
 	    	}
 	    } else {
+	    	console.log('Odd Marker');
 	    	if (clockwise) {
 	    		//Marker is on the inside edge
 				var marker_location = marker.centre.world;
