@@ -7,6 +7,8 @@ var clockwise = true;
 var last_steer = 1;
 var last_move = 1;
 
+var driver = {}
+
 driver.scan = function (client) {
 	//Go the other way!
 	steer = last_steer * -1; 
