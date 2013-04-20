@@ -65,7 +65,7 @@ driver.approach_marker = function (client, marker)  {
 		} else if (marker.code < last_seen_marker) {
 			driver.scan_for_markers(client); //We shouldn't be going backwards!
 		} else {
-			steer = - Math.sin(marker.center.world.y);
+			steer = Math.cos(marker.center.world.y * 20);
             console.log('maintain going toward marker at steering - ' + steer);
             client.steer(steer);
             client.move(move);
