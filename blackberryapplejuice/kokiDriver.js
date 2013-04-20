@@ -30,6 +30,7 @@ driver.avoidWalls = function(client, marker) {
     if (distance_to_wall <= 0.15) {
         if (Math.abs(marker.bearing.x) < previous_bearing) {
             steer = -last_steer
+            previous_bearing = marker.bearing.x;
         }
         client.steer(move);
         client.move(move);
@@ -44,8 +45,10 @@ driver.drive = function (client, data) {
 	if (data.getLastMarkers().length > 0) {
 		console.log('Seen a marker');
 		//Seen a new marker
-		marker = data.getFurthestMarker();
-        driver.approach(client, marker);
+        if (!driver.avoidWalls()) {
+            marker = data.getFurthestMarker();
+            driver.approach(client, marker);
+        }
 	} else {
 		driver.scan(client);
 	}
