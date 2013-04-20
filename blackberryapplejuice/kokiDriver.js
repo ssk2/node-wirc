@@ -8,6 +8,8 @@ var last_steer = 1;
 var previous_bearing = 0;
 var last_move = 0.5;
 
+var steer_reduction_timeout = null;
+
 var driver = {}
 
 driver.drive = function (client, data) {	
@@ -22,14 +24,52 @@ driver.drive = function (client, data) {
 }
 
 driver.scan_for_markers = function (client) {
-	//Go the other way!
-	steer = last_steer * -1; 
-	move = last_move * -1;
-	client.steer(steer);
+    console.log('Scanning');
+    //Go the other way!
+    steer = last_steer * -1; 
+    move = last_move * -1;
 	client.move(move);
+    console.log(steer);
+    client.steer(steer);
 	console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
 	last_steer = steer;
 	last_move = move;
+    console.log('Finished scanning');
+}
+
+driver.see_marker = function (client, marker) {
+    console.log('Marker seen');
+    if (marker.centre.world.y < 1) {
+        if (null == steer_reduction_timeout) {
+            if (marker.code %2 == 0) {
+                steer = -1;
+            } else {
+                steer = 1;
+            }
+            last_steer = steer;
+            client.steer(steer);
+            steer_reduction_timeout = setInterval(function() {
+                driver.reduce_steering(client);
+            }, 500);
+        }
+    }
+}
+
+driver.reduce_steering = function (client) {
+    var reduction_rate = 0.4;
+    if (last_steer > 0) {
+        var new_steer = last_steer - reduction_rate;
+    } else {
+        var new_steer = last_steer + reduction_rate;
+    }
+    console.log('New steer: ', new_steer);
+    client.steer(new_steer);
+    if (0 <= new_steer) {
+        console.log('Steering finished');
+        clearInterval(steer_reduction_timeout);
+        steer_reduction_timeout = null;
+    }
+    last_steer = new_steer;
 }
 
 driver.approach_marker = function (client, marker)  {
