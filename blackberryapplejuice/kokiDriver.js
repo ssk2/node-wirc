@@ -41,7 +41,6 @@ driver.approach_marker = function (client, marker)  {
 		console.log('Moving towards marker ' + marker.code.toString());
 
 		if (marker.code > last_seen_marker) {
-			last_seen_marker = marker.code;
 			if (marker.code % 2 == 0) {
 				console.log('Even marker');
 				if (clockwise) {
@@ -66,8 +65,10 @@ driver.approach_marker = function (client, marker)  {
 		} else if (marker.code < last_seen_marker) {
 			driver.scan_for_markers(client); //We shouldn't be going backwards!
 		} else {
-			//Keep going.
+			steer = - Math.sin(marker.center.world.y);
+            client.move(move);
 		}
+        last_seen_marker = marker.code;
 	}
 }
 
