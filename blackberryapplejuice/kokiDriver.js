@@ -19,7 +19,17 @@ driver.scan = function (client) {
 	last_move = move;
 }
 
-driver.drive = function (client, marker)  {
+driver.drive = function (client, data) {
+	if (data.getNewestMarkers()) {
+		//Seen a new marker
+		marker = data.getFurthestMarker();
+        driver.approach(client, marker);
+	} else {
+		driver.scan(client);
+	}
+}
+
+driver.approach = function (client, marker)  {
     //Is marker the next marker we're expecting? (i.e. < last marker)
     //Drive towards it (clever driving logic here that slows down when we hit a marker)
     if (marker.code > last_seen_marker)
