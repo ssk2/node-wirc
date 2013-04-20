@@ -30,7 +30,7 @@ driver.avoidWalls = function(client, marker) {
     if (distance_to_wall <= 0.15) {
         if (Math.abs(marker.bearing.x) < previous_bearing) {
             steer = -last_steer
-            previous_bearing = marker.bearing.x;
+            previous_bearing = Math.abs(marker.bearing.x);
         }
         client.steer(move);
         client.move(move);
