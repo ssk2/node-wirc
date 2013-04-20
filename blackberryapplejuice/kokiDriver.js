@@ -1,35 +1,28 @@
 var last_seen_marker = 0;
-var max_speed = 1 //Arbitrary
+var max_move = 1 //Arbitrary
 var steer = 0;
-var move = 0;
+var move = 0.5;
+var accelerate = 1.05;
 var clockwise = true;
 
-var last_steer = 1;
+var last_steer = 0.5;
+
 var previous_bearing = 0;
-var last_move = 0.5;
 
 var driver = {}
 
-driver.drive = function (client, data) {	
-	if (data.getLastMarkers().length > 0) {
-		console.log('Seen a marker');
-		//Seen a new marker
-        marker = data.getFurthestMarker();
-        driver.approach_marker(client, marker);
-	} else {
-		driver.scan_for_markers(client);
-	}
+driver.drive = function (steer, move) {	
+	client.steer(steer);
+	client.move(move);
+	console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
 }
 
 driver.scan_for_markers = function (client) {
 	//Go the other way!
 	steer = last_steer * -1; 
-	move = last_move * -1;
-	client.steer(steer);
-	client.move(move);
-	console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
+	driver.accelerate(); //Ambitious
+	driver.drive(steer, move);
 	last_steer = steer;
-	last_move = move;
 }
 
 driver.approach_marker = function (client, marker)  {
@@ -46,23 +39,20 @@ driver.approach_marker = function (client, marker)  {
 					//Marker is on the outside edge
 					var marker_location = marker.centre.world;
 					steer = marker_location.x * -3;
-					move = (marker_location.y - 1) * 0.5;
-					console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
-					client.steer(steer);
-					client.move(move);
+					driver.accelerate();
+					driver.drive(steer, move);
 				}
 			} else {
 				if (clockwise) {
 					//Marker is on the inside edge
 					var marker_location = marker.centre.world;
 					steer = marker_location.x * -3;
-					move = (marker_location.y - 1) * 0.5;
-					console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
-					client.steer(steer);
-					client.move(move);
+					driver.accelerate();
+					driver.drive(steer, move);
 				}
 			}    	
 		} else if (marker.code < last_seen_marker) {
+			driver.decelerate();
 			driver.scan_for_markers(client); //We shouldn't be going backwards!
 		} else {
 			steer = - Math.sin(marker.center.world.y);
@@ -72,6 +62,18 @@ driver.approach_marker = function (client, marker)  {
 		}
         last_seen_marker = marker.code;
 	}
+}
+
+driver.accelerate = function () {
+	move *= accelerate;
+
+	if (move > max_move) {
+		move = max_move;
+	}
+}
+
+driver.decelerate = function () {
+	move /= accelerate;
 }
 
 driver.avoid_walls = function(client, marker) {
@@ -84,10 +86,7 @@ driver.avoid_walls = function(client, marker) {
             steer = -last_steer
             previous_bearing = Math.abs(marker.bearing.x);
         }
-
-        client.steer(steer);
-        client.move(move);
-        console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
+        driver.drive(steer, move);
         return true;
     }
     return false;
