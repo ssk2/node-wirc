@@ -32,7 +32,8 @@ driver.see_marker = function (client, marker) {
     console.log('Marker seen');
     if (marker.centre.world.y < 1) {
         if ( marker.code != steering_marker_id ) {
-
+            clearInterval(steer_reduction_timeout);
+            steer_reduction_timeout = null;
         }
         if (null == steer_reduction_timeout) {
             if (marker.code %2 == 0) {
