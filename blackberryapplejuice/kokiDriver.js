@@ -45,13 +45,8 @@ driver.drive = function (client, data) {
 	if (data.getLastMarkers().length > 0) {
 		console.log('Seen a marker');
 		//Seen a new marker
-        if (!driver.avoidWalls()) {
-            //reset this to zero to make sure that if we hit another wall it's reset
-            previous_bearing = 0;
-            
-            marker = data.getFurthestMarker();
-            driver.approach(client, marker);
-        }
+        marker = data.getFurthestMarker();
+        driver.approach(client, marker);
 	} else {
 		driver.scan(client);
 	}
