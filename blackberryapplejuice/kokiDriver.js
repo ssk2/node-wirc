@@ -7,6 +7,8 @@ var clockwise = true;
 
 var last_steer = 0.5;
 
+var steer_reduction_timeout = null;
+
 var previous_bearing = 0;
 
 var driver = {}
