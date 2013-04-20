@@ -1,7 +1,7 @@
 var last_seen_marker = 0;
 var max_move = 1 //Arbitrary
 var steer = 0;
-var move = 0.3;
+var move = 0.4;
 var accelerate = 1.05;
 var clockwise = true;
 
@@ -59,7 +59,7 @@ driver.reduce_steering = function (client) {
     } else {
         var steer = last_steer + reduction_rate;
     }
-    console.log('New steer: ', new_steer);
+    console.log('New steer: ', steer);
     driver.drive(client);
     if (0 <= steer) {
         console.log('Steering finished');

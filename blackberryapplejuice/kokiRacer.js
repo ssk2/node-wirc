@@ -16,7 +16,7 @@ client.discover()
         data.startCapturing(client);
         console.log('Started capturing');
 
-        client.move(0.3);
+        client.move(0.4);
 
         data.on('marker', function(marker) {
             driver.see_marker(client, marker);
