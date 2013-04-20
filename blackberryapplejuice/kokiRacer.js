@@ -1,7 +1,7 @@
 var client = require('../lib/car');
 var childProcess = require('child_process');
 var koki = require("../lib/koki");
-var wrapper = require("kokiWrapper");
+var wrapper = require("./kokiWrapper");
 
 var serialNumber = '0000981';
 
@@ -9,6 +9,9 @@ client.discover()
     .then(function() { return client.connect(serialNumber); })
     .then(function() { return client.enable(); })
     .then(function() {
+
+        //Scan 
+
 
         var device = client.chosenDevice();
         var steer = 0;
