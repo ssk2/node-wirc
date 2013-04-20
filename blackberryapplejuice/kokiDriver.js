@@ -37,6 +37,7 @@ driver.approach_marker = function (client, marker)  {
     //Drive towards it (clever driving logic here that slows down when we hit a marker)
 
     if (!driver.avoid_walls(client, marker)) {
+    	previous_bearing = 0;
 		console.log('Moving towards marker ' + marker.code.toString());
 
 		if (marker.code > last_seen_marker) {
