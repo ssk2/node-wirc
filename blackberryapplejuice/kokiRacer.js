@@ -3,6 +3,7 @@ var childProcess = require('child_process');
 var driver = require("./kokiDriver");
 var koki = require("../lib/koki");
 var wrapper = require("./kokiWrapper");
+var data = require('./kokiData');
 
 var serialNumber = '0000981';
 
@@ -13,18 +14,8 @@ client.discover()
 
         var device = client.chosenDevice();
 
-        client.startCamera(0, function(data) {
+        setInterval(function() {
+            driver.drive(client, data);
+        }, 50); //20 times a second
 
-            koki.findMarkers(data.image, function(err, markers) {
-                if (markers[0]) {     
-                    //Found marker
-                    marker = markers[0];
-                    driver.drive(client, marker);
-                }
-                else {
-                    //Look for marker
-                   driver.scan(client);
-                }
-            });
-        });
     });
