@@ -1,7 +1,7 @@
 var last_seen_marker = 0;
 var max_move = 1 //Arbitrary
 var steer = 0;
-var move = 0.6;
+var move = 0.4;
 var accelerate = 1.05;
 var clockwise = true;
 
@@ -26,7 +26,11 @@ driver.drive = function (client) {
 driver.scan_for_markers = function (client) {
 	//Go the other way!
 	console.log('Scanning');
-	steer = last_steer * -1; 
+
+	// if (steering_marker_id % 2 == 0) {
+	// 	// reverse
+	// }
+	//steer = last_steer * -1; 
 	move = last_move * -1; //Ambitious
 	driver.drive(client);
 }
