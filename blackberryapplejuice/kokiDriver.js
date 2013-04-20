@@ -6,6 +6,7 @@ var clockwise = true;
 //What is the expected marker orientation? Clockwise or anticlockwise? Initialise appropriately.
 var last_steer = 1;
 var last_move = 1;
+var previous_bearing = 0;
 
 var driver = {}
 
@@ -17,6 +18,21 @@ driver.scan = function (client) {
 	client.move(move);
 	last_steer = steer;
 	last_move = move;
+}
+
+driver.avoidWalls = function(client, marker) {
+    var angle = marker.rotation.x;
+    angle = angle * angle_convert;
+    var distance_to_wall = marker.centre.world.y * Math.cos(angle)
+    
+    //if we're too close to a wall then get away before doing anthing else
+    if (distance_to_wall <= 0.15) {
+        if (Math.abs(marker.bearing.x) < previous_bearing) {
+            steer = -last_steer
+        }
+        client.steer(move);
+        client.move(move);
+    }
 }
 
 driver.drive = function (client, data) {
