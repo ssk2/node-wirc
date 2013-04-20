@@ -1,6 +1,7 @@
 var client = require('../lib/car');
 var childProcess = require('child_process');
 var koki = require("../lib/koki");
+var wrapper = require("kokiWrapper");
 
 var serialNumber = '0000981';
 
