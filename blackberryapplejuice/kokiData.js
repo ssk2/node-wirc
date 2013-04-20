@@ -24,9 +24,9 @@ data.getFurthestMarker = function() {
 	var furthestMarker = null;
 	var furthestDistance = 0;
 	lastMarkers.forEach(function(marker) {
-		if (marker.world.y > furthestDistance) {
+		if (marker.center.world.y > furthestDistance) {
 			furthestMarker = marker;
-			furthestDistance = marker.world.y;
+			furthestDistance = marker.center.world.y;
 		}
 	});
 	return furthestMarker;
