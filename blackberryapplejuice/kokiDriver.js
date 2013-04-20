@@ -43,22 +43,22 @@ driver.approach_marker = function (client, marker)  {
 		if (marker.code > last_seen_marker) {
 			last_seen_marker = marker.code;
 			if (marker.code % 2 == 0) {
-				console.log('Even marker');
 				if (clockwise) {
 					//Marker is on the outside edge
 					var marker_location = marker.centre.world;
 					steer = marker_location.x * -3;
-					move = (marker_location.y - 1) * 0.7;
+					move = (marker_location.y - 1) * 0.5;
+					console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
 					client.steer(steer);
 					client.move(move);
 				}
 			} else {
-				console.log('Odd Marker');
 				if (clockwise) {
 					//Marker is on the inside edge
 					var marker_location = marker.centre.world;
 					steer = marker_location.x * -3;
-					move = (marker_location.y - 1) * 0.7;
+					move = (marker_location.y - 1) * 0.5;
+					console.log('Steer:' + steer.toString() + ' Move: ' + move.toString());
 					client.steer(steer);
 					client.move(move);
 				}

@@ -14,12 +14,13 @@ client.discover()
 
         var device = client.chosenDevice();
         data.startCapturing(client);
+        console.log('Started capturing');
 
         data.on('marker', function(marker) {
             driver.approach_marker(client, marker);
         });
 
         data.on('timeout', function() {
-            driver.scan_for_marker(client);
+            driver.scan_for_markers(client);
         });
     });
