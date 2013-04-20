@@ -1,5 +1,5 @@
 var client = require('../lib/car');
-var childProcess = require('child_process');
+var childProcess = require('child_process');    
 var driver = require("./kokiDriver");
 var koki = require("../lib/koki");
 var wrapper = require("./kokiWrapper");
@@ -15,8 +15,11 @@ client.discover()
         var device = client.chosenDevice();
         data.startCapturing(client);
 
-        setInterval(function() {
-            driver.drive(client, data);
-        }, 1000); //20 times a second
+        data.on('marker', function(marker) {
+            driver.approach_marker(client, marker);
+        });
 
+        data.on('timeout', function() {
+            driver.scan_for_marker(client);
+        });
     });
