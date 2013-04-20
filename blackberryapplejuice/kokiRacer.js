@@ -13,9 +13,10 @@ client.discover()
     .then(function() {
 
         var device = client.chosenDevice();
+        data.startCapturing(client);
 
         setInterval(function() {
             driver.drive(client, data);
-        }, 50); //20 times a second
+        }, 1000); //20 times a second
 
     });
