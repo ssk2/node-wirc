@@ -73,7 +73,8 @@ driver.approach_marker = function (client, marker)  {
 
 driver.avoid_walls = function(client, marker) {
     var distance_to_wall = driver.distance_to_wall(marker);
-
+    console.log('Distance to the wall ' + distance_to_wall);
+    
     if (distance_to_wall <= 0.15) {
     	console.log('Avoiding wall!');
         if (Math.abs(marker.bearing.x) < previous_bearing) {
@@ -96,6 +97,7 @@ driver.distance_to_marker = function (marker) {
 
 driver.distance_to_wall = function (marker) { 
     angle = marker.rotation.x * (180 / Math.pi);
+    console.log('Angle of us to marker ' + angle);
     return marker.centre.world.y * Math.cos(angle);
 }
 
