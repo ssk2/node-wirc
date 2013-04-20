@@ -32,7 +32,11 @@ driver.avoidWalls = function(client, marker) {
         }
         client.steer(move);
         client.move(move);
+        
+        //return a value to show that we're performing evasive actions
+        return true;
     }
+    return false;
 }
 
 driver.drive = function (client, data) {
