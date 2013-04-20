@@ -10,7 +10,17 @@ client.discover()
     .then(function() { return client.enable(); })
     .then(function() {
 
-        //Scan 
+        //What is the expected marker orientation? Clockwise or anticlockwise? Initialise appropriately.
+
+        //State machine
+        //Scan for marker
+
+        //Found marker?
+            //Classify marker (left or right?)
+            //Is marker the next marker we're expecting? (i.e. < last marker)
+            //Drive towards it (clever driving logic here that slows down when we hit a marker)
+        
+
 
 
         var device = client.chosenDevice();
