@@ -5,8 +5,8 @@ var move = 0;
 var clockwise = true;
 //What is the expected marker orientation? Clockwise or anticlockwise? Initialise appropriately.
 var last_steer = 1;
-var last_move = 1;
 var previous_bearing = 0;
+var last_move = 0.5;
 
 var driver = {}
 
@@ -16,6 +16,7 @@ driver.scan = function (client) {
 	move = last_move * -1;
 	client.steer(steer);
 	client.move(move);
+	console.log(move);
 	last_steer = steer;
 	last_move = move;
 }
@@ -41,6 +42,7 @@ driver.avoidWalls = function(client, marker) {
 
 driver.drive = function (client, data) {
 	if (data.getLastMarkers().length > 0) {
+		console.log('Seen a marker');
 		//Seen a new marker
 		marker = data.getFurthestMarker();
         driver.approach(client, marker);
