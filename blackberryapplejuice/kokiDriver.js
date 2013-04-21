@@ -1,7 +1,7 @@
 var last_seen_marker = 0;
 var max_move = 1 //Arbitrary
 var steer = 0;
-var move = 0.4;
+var move = 0.8;
 var accelerate = 1.05;
 var clockwise = true;
 
